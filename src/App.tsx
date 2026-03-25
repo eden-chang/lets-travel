@@ -284,7 +284,7 @@ export function App() {
       {/* Bottom Tab Bar — 항상 최상위 */}
       <nav
         className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full bg-white flex flex-col rounded-tl-2xl rounded-tr-2xl"
-        style={{ outline: "0.5px solid #e5e7eb", maxWidth: "390px", zIndex: 60 }}
+        style={{ outline: "0.5px solid #e5e7eb", maxWidth: "390px", zIndex: 60, paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
       >
         <div className="flex items-stretch pt-[6px] pb-[2px]">
           {TABS.map((tab) => {
@@ -328,7 +328,6 @@ export function App() {
             );
           })}
         </div>
-        <div style={{ height: "calc(env(safe-area-inset-bottom, 0px) + 2px)" }} />
       </nav>
 
       {/* FAB — 항상 최상위 */}
