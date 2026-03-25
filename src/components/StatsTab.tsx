@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { MEMBERS, CATEGORY_COLORS, CATEGORY_ICONS, DAY_NAMES } from "../constants";
+import { MEMBERS, CATEGORY_COLORS, CATEGORY_ICONS, DAY_NAMES, TRIP } from "../constants";
 import { formatKRW } from "../utils";
 import { Icon } from "./Icon";
 import type { Expense } from "../types";
@@ -77,12 +77,20 @@ export function StatsTab({ settlement, expenses, currentUser }: StatsTabProps) {
         </div>
       </div>
 
-      {/* 일별 지출 */}
+      {/* 일별 지출 — 여행 전체 날짜 */}
       <div className="mx-4 bg-white rounded-2xl px-5 py-4">
         <div className="text-[15px] leading-[23px] font-bold text-text1 mb-3">일별 지출</div>
         <div className="flex flex-col gap-[6px]">
-          {sortedDates.map((date) => {
-            const amount = byDate[date];
+          {(() => {
+            const allDates: string[] = [];
+            const s = new Date(TRIP.startDate + "T00:00:00");
+            const e = new Date(TRIP.endDate + "T00:00:00");
+            for (let d = new Date(s); d <= e; d.setDate(d.getDate() + 1)) {
+              allDates.push(d.toISOString().slice(0, 10));
+            }
+            return allDates;
+          })().map((date) => {
+            const amount = byDate[date] ?? 0;
             const d = new Date(date + "T00:00:00");
             const pct = Math.max(8, (amount / maxDaily) * 100);
             return (

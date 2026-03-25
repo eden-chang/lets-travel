@@ -337,7 +337,7 @@ export function App() {
           onClick={handleFab}
           aria-label="추가"
           className="press-fab fixed w-[52px] h-[52px] rounded-full text-white text-[26px] font-light flex items-center justify-center"
-          style={{ bottom: "calc(74px + env(safe-area-inset-bottom, 0px) + 12px)", right: "16px", background: "var(--th)", zIndex: 60 }}
+          style={{ bottom: "calc(74px + env(safe-area-inset-bottom, 0px) + 12px)", right: "max(16px, calc(50% - 195px + 16px))", background: "var(--th)", zIndex: 60 }}
         >
           +
         </button>

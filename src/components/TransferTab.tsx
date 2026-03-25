@@ -121,12 +121,12 @@ export function TransferTab({
           const dayIdx = d.getDay();
           const isSat = dayIdx === 6;
           const isSun = dayIdx === 0;
-          const dayTotal = grouped[date].reduce((s, t) => s + t.amount, 0);
+
 
           return (
             <div key={date} className="mx-4 bg-white rounded-2xl overflow-hidden">
               {/* 날짜 헤더 */}
-              <div className="flex justify-between items-center px-4 pt-3 pb-2">
+              <div className="px-4 pt-3 pb-2">
                 <span className="text-[13px] leading-[20px] font-bold text-text1">
                   {date.slice(5).replace("-", "/")}{" "}
                   <span
@@ -135,9 +135,6 @@ export function TransferTab({
                   >
                     {DAY_NAMES[dayIdx]}
                   </span>
-                </span>
-                <span className="tabular-nums text-[11px] leading-[17px] font-semibold text-text3">
-                  {formatKRW(dayTotal)}원
                 </span>
               </div>
 
@@ -155,16 +152,8 @@ export function TransferTab({
                       <div className="py-3 px-4 flex items-center gap-3">
                         {/* 내용 */}
                         <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-[6px]">
-                            <span
-                              className="text-[11px] leading-[17px] font-bold px-[6px] py-[1px] rounded-[6px] shrink-0"
-                              style={{ background: `${color}12`, color }}
-                            >
-                              {t.type === "deposit" ? "선입금" : t.type === "cash_exchange" ? "현금" : "정산"}
-                            </span>
-                            <span className="text-[14px] leading-[21px] font-semibold text-text1 truncate">
-                              {t.from} → {t.to}
-                            </span>
+                          <div className="text-[14px] leading-[21px] font-semibold text-text1 truncate">
+                            {t.from} → {t.to}
                           </div>
                           {t.memo && (
                             <div className="text-[11px] leading-[17px] text-text4 mt-[2px] truncate">
@@ -173,14 +162,20 @@ export function TransferTab({
                           )}
                         </div>
 
-                        {/* 금액 */}
-                        <div className="text-right shrink-0">
-                          <div className="text-[15px] leading-[23px] font-bold" style={{ color }}>
+                        {/* 뱃지 + 금액 */}
+                        <div className="flex items-center gap-[6px] shrink-0">
+                          <span
+                            className="text-[11px] leading-[17px] font-bold px-[6px] py-[1px] rounded-[6px]"
+                            style={{ background: `${color}12`, color }}
+                          >
+                            {t.type === "deposit" ? "선입금" : t.type === "cash_exchange" ? "현금" : "정산"}
+                          </span>
+                          <span className="text-[15px] leading-[23px] font-bold" style={{ color }}>
                             {t.currency && t.currency !== "KRW"
                               ? `${t.amount.toLocaleString()} ${t.currency}`
                               : `${formatKRW(t.amount)}원`
                             }
-                          </div>
+                          </span>
                         </div>
                       </div>
                     </button>
