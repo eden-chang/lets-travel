@@ -34,8 +34,8 @@ function buildDateTabs(): DateTab[] {
     { value: "prep", day: "준비", weekday: "", weekdayIdx: -1 },
   ];
 
-  const start = new Date(TRIP.startDate);
-  const end = new Date(TRIP.endDate);
+  const start = new Date(TRIP.startDate + "T00:00:00");
+  const end = new Date(TRIP.endDate + "T00:00:00");
 
   for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
     const iso = d.toISOString().slice(0, 10);
@@ -106,7 +106,6 @@ export function ListTab({ exp, currentUser, rates, ratesUpdatedAt, onDel, onEdit
   const [dateFilter, setDateFilter] = useState("all");
   const [includeBigItems, setIncludeBigItems] = useState(false);
   const [onlyMine, setOnlyMine] = useState(false);
-  const [showRates, setShowRates] = useState(false);
 
   const EXCLUDED_CATS = ["항공", "숙박"];
 
@@ -144,49 +143,12 @@ export function ListTab({ exp, currentUser, rates, ratesUpdatedAt, onDel, onEdit
     [grouped]
   );
 
-  const KRW_BASE = 10000;
-  const ratesTimeStr = ratesUpdatedAt
-    ? new Date(ratesUpdatedAt).toLocaleString("ko-KR", { year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit" })
-    : "";
-
   return (
     <div className="flex flex-col">
       {/* 헤더 */}
-      <div className="px-5 pt-2 pb-1 flex items-center justify-between">
+      <div className="px-5 pt-2 pb-1">
         <span className="text-[24px] leading-[33px] text-text1" style={{ fontWeight: 800 }}>지출</span>
-        <button
-          onClick={() => setShowRates((v) => !v)}
-          className={`text-[12px] leading-[18px] font-semibold px-3 py-[6px] rounded-full flex items-center justify-center ${
-            showRates ? "bg-action text-white" : "bg-white text-text1 border border-border"
-          }`}
-        >
-          환율 보기
-        </button>
       </div>
-
-      {showRates && (
-        <div className="mx-4 mb-2 bg-white rounded-2xl px-5 py-3">
-          <div className="text-[11px] leading-[17px] text-text4 mb-2">
-            1만원 기준{ratesTimeStr && ` · ${ratesTimeStr} 기준`}
-          </div>
-          <div className="flex flex-col gap-[6px]">
-            {(["EUR", "CZK", "HUF"] as const).map((c) => {
-              const rate = rates[c] ?? 1;
-              const converted = rate > 0 ? KRW_BASE / rate : 0;
-              const decimals = converted < 10 ? 2 : converted < 100 ? 1 : 0;
-              return (
-                <div key={c} className="flex items-center justify-between">
-                  <span className="text-[13px] leading-[20px] font-semibold text-text2">{c}</span>
-                  <span className="text-[13px] leading-[20px] text-text1 tabular-nums">
-                    {converted.toFixed(decimals)} <span className="text-text4 text-[11px] leading-[17px]">(1{c}={rate.toLocaleString("ko-KR")}원)</span>
-                  </span>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      )}
-
       {/* 총 지출 요약 + 필터 */}
       <div className="mx-4 mt-1 mb-2 bg-white rounded-2xl px-5 py-4">
         <div className="text-[12px] leading-[18px] text-text3 mb-1">
@@ -281,7 +243,7 @@ export function ListTab({ exp, currentUser, rates, ratesUpdatedAt, onDel, onEdit
       ) : (
         <div>
           {sortedDates.map((date) => {
-            const d = new Date(date);
+            const d = new Date(date + "T00:00:00");
             const dayTotal = grouped[date].reduce((s, e) => s + e.krw, 0);
             const dayIdx = d.getDay();
             const isSat = dayIdx === 6;

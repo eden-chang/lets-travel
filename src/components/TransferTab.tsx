@@ -117,7 +117,7 @@ export function TransferTab({
       ) : (
         /* 날짜별 그룹 카드 */
         sortedDates.map((date) => {
-          const d = new Date(date);
+          const d = new Date(date + "T00:00:00");
           const dayIdx = d.getDay();
           const isSat = dayIdx === 6;
           const isSun = dayIdx === 0;
