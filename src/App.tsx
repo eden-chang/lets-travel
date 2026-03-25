@@ -203,7 +203,7 @@ export function App() {
       <div
         className="shrink-0"
         style={{
-          paddingTop: "max(env(safe-area-inset-top, 16px), 16px)",
+          paddingTop: "max(env(safe-area-inset-top, 20px), 20px)",
           background: "#F2F4F6",
         }}
       />

@@ -38,9 +38,9 @@ export function SettleTab({ settlement }: SettleTabProps) {
   });
 
   return (
-    <div className="flex flex-col gap-2 pt-1">
+    <div className="flex flex-col gap-3 pt-3">
       {/* 제목 */}
-      <div className="px-5 pt-2 pb-3 text-[24px] leading-[33px] text-text1" style={{ fontWeight: 800 }}>
+      <div className="px-5 pt-4 pb-4 text-[24px] leading-[33px] text-text1" style={{ fontWeight: 800 }}>
         정산
       </div>
 

@@ -146,8 +146,8 @@ export function WalletTab({
   const KRW_BASE = 10000;
 
   return (
-    <div className="flex flex-col gap-2 pt-1">
-      <div className="px-5 pt-2 pb-3 flex items-center justify-between">
+    <div className="flex flex-col gap-3 pt-3">
+      <div className="px-5 pt-4 pb-4 flex items-center justify-between">
         <span className="text-[24px] leading-[33px] text-text1" style={{ fontWeight: 800 }}>나의 지갑</span>
         <button
           onClick={() => setShowRates((v) => !v)}

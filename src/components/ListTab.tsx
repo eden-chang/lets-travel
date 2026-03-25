@@ -146,11 +146,11 @@ export function ListTab({ exp, currentUser, rates, ratesUpdatedAt, onDel, onEdit
   return (
     <div className="flex flex-col">
       {/* 헤더 */}
-      <div className="px-5 pt-2 pb-3">
+      <div className="px-5 pt-4 pb-4">
         <span className="text-[24px] leading-[33px] text-text1" style={{ fontWeight: 800 }}>지출</span>
       </div>
       {/* 총 지출 요약 + 필터 */}
-      <div className="mx-4 mt-1 mb-2 bg-white rounded-2xl px-5 py-4">
+      <div className="mx-4 mb-3 bg-white rounded-2xl px-5 py-4">
         <div className="text-[12px] leading-[18px] text-text3 mb-1">
           총 지출 {totalCount}건
         </div>
@@ -170,7 +170,7 @@ export function ListTab({ exp, currentUser, rates, ratesUpdatedAt, onDel, onEdit
       </div>
 
       {/* 날짜 탭 */}
-      <div className="mx-4 mb-2 bg-white rounded-2xl px-2 py-[6px]">
+      <div className="mx-4 mb-3 bg-white rounded-2xl px-2 py-[6px]">
         <div className="flex">
           {/* "전체" 고정 */}
           <button
@@ -250,7 +250,7 @@ export function ListTab({ exp, currentUser, rates, ratesUpdatedAt, onDel, onEdit
             const isSun = dayIdx === 0;
 
             return (
-              <div key={date} className="mx-4 mb-2 bg-white rounded-2xl overflow-hidden">
+              <div key={date} className="mx-4 mb-3 bg-white rounded-2xl overflow-hidden">
                 {/* 날짜 헤더 */}
                 <div className="flex justify-between items-center px-4 pt-3 pb-2">
                   <span className="text-[13px] leading-[20px] font-bold text-text1">
