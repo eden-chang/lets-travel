@@ -274,7 +274,7 @@ export function WalletTab({
                         saveCash({ ...entry, amount: val });
                       }
                     }}
-                    className="w-[80px] px-2 py-[6px] border border-border rounded-lg text-[14px] leading-[21px] outline-none text-right"
+                    className="w-[90px] px-2 py-[6px] border border-border rounded-lg text-[14px] leading-[21px] outline-none text-right"
                   />
                   <button
                     onClick={() => deleteCash(entry.id)}
