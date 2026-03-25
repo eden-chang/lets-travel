@@ -39,6 +39,14 @@ const MOCK_CASH: CashEntry[] = [
 
 export async function seedIfEmpty(): Promise<boolean> {
   const existing = await getAllItems("expenses");
+
+  // 기존 데이터 마이그레이션: "입장료" → "문화"
+  for (const e of existing) {
+    if (e.category === "입장료") {
+      await putItem("expenses", { ...e, category: "문화" });
+    }
+  }
+
   if (existing.length > 0) return false;
 
   for (const e of MOCK_EXPENSES) await putItem("expenses", e);
