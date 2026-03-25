@@ -228,6 +228,7 @@ export function App() {
             saveCash={saveCash}
             deleteCash={deleteCash}
             rates={rates}
+            ratesUpdatedAt={ratesUpdatedAt}
             currentUser={currentUser}
             budget={budget}
             setBudget={handleSetBudget}

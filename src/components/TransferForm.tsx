@@ -119,7 +119,7 @@ export function TransferForm({ onSave, onDel, editItem, onClose, onDragProgress,
         <div className="flex flex-col h-full" style={{ animation: "contentFadeIn 0.18s ease 0.06s both" }}>
           <div className="flex-1 overflow-y-auto custom-scroll">
             {/* 헤더 */}
-            <div className="flex items-center justify-between px-5 pb-4" style={{ paddingTop: "calc(max(env(safe-area-inset-top, 20px), 20px) + 8px)" }}>
+            <div className="flex items-center justify-between px-5 pb-3" style={{ paddingTop: "calc(max(env(safe-area-inset-top, 20px), 20px) + 8px)" }}>
               <span className="text-[24px] leading-[33px] text-text1" style={{ fontWeight: 800 }}>
                 {editItem ? "송금 수정" : "송금 추가"}
               </span>

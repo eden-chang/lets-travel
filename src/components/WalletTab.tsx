@@ -12,6 +12,7 @@ interface WalletTabProps {
   saveCash: (item: CashEntry) => Promise<void>;
   deleteCash: (id: string) => Promise<void>;
   rates: Record<string, number>;
+  ratesUpdatedAt: string;
   currentUser: string;
   budget: number;
   setBudget: (val: number) => void;
@@ -25,6 +26,7 @@ export function WalletTab({
   saveCash,
   deleteCash,
   rates,
+  ratesUpdatedAt,
   currentUser,
   budget,
   setBudget,
@@ -145,7 +147,7 @@ export function WalletTab({
 
   return (
     <div className="flex flex-col gap-2 pt-1">
-      <div className="px-5 pt-2 pb-1 flex items-center justify-between">
+      <div className="px-5 pt-2 pb-3 flex items-center justify-between">
         <span className="text-[24px] leading-[33px] text-text1" style={{ fontWeight: 800 }}>나의 지갑</span>
         <button
           onClick={() => setShowRates((v) => !v)}
@@ -157,7 +159,12 @@ export function WalletTab({
 
       {showRates && (
         <div className="mx-4 bg-white rounded-2xl px-5 py-3">
-          <div className="text-[11px] leading-[17px] text-text4 mb-2">1만원 기준</div>
+          <div className="text-[11px] leading-[17px] text-text4 mb-2">
+            1만원 기준
+            {ratesUpdatedAt && (
+              <span className="ml-1">· {new Date(ratesUpdatedAt).toLocaleString("ko-KR", { month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit" })} 기준</span>
+            )}
+          </div>
           <div className="flex flex-col gap-[6px]">
             {(["EUR", "CZK", "HUF", "USD"] as const).map((c) => {
               const rate = rates[c] ?? (c === "USD" ? 1350 : 1);

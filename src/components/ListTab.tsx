@@ -146,7 +146,7 @@ export function ListTab({ exp, currentUser, rates, ratesUpdatedAt, onDel, onEdit
   return (
     <div className="flex flex-col">
       {/* 헤더 */}
-      <div className="px-5 pt-2 pb-1">
+      <div className="px-5 pt-2 pb-3">
         <span className="text-[24px] leading-[33px] text-text1" style={{ fontWeight: 800 }}>지출</span>
       </div>
       {/* 총 지출 요약 + 필터 */}
