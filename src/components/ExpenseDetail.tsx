@@ -189,22 +189,20 @@ export function ExpenseDetail({ item, onEdit, onDel, onClose, onToast, onDragPro
             )}
 
             {/* 하단 버튼 */}
-            <div className="mx-4 mt-3 mb-2">
-              <div className="flex gap-2">
-                <button
-                  onClick={onEdit}
-                  className="flex-1 py-3 rounded-2xl text-[14px] leading-[21px] font-bold text-white flex items-center justify-center"
-                  style={{ background: "var(--th)" }}
-                >
-                  수정하기
-                </button>
-                <button
-                  onClick={() => setShowDeleteConfirm(true)}
-                  className="py-3 px-5 rounded-2xl text-[14px] leading-[21px] font-bold flex items-center justify-center bg-[#f2f3f7] text-danger"
-                >
-                  삭제
-                </button>
-              </div>
+            <div className="mx-4 mt-5 mb-2">
+              <button
+                onClick={onEdit}
+                className="w-full py-3 rounded-2xl text-[14px] leading-[21px] font-bold text-white flex items-center justify-center"
+                style={{ background: "var(--th)" }}
+              >
+                수정하기
+              </button>
+              <button
+                onClick={() => setShowDeleteConfirm(true)}
+                className="w-full mt-2 py-2 text-[13px] leading-[20px] text-danger flex items-center justify-center"
+              >
+                삭제하기
+              </button>
             </div>
 
             <div className="h-[80px]" />
