@@ -2,6 +2,7 @@ import { useState, useRef, useCallback } from "react";
 import { MEMBERS, CURRENCIES, COLORS } from "../constants";
 import { uid, formatKRW } from "../utils";
 import { DateInput } from "./DateInput";
+import { Icon } from "./Icon";
 import type { Transfer, TransferType } from "../types";
 
 interface TransferFormProps {
@@ -11,6 +12,7 @@ interface TransferFormProps {
   onClose: () => void;
   onDragProgress?: (progress: number) => void;
   onToast: (msg: string) => void;
+  currentUser?: string;
 }
 
 const TYPE_OPTIONS: { key: TransferType; label: string; color: string }[] = [
@@ -19,9 +21,9 @@ const TYPE_OPTIONS: { key: TransferType; label: string; color: string }[] = [
   { key: "cash_exchange", label: "현금거래", color: COLORS.positive },
 ];
 
-export function TransferForm({ onSave, onDel, editItem, onClose, onDragProgress, onToast }: TransferFormProps) {
+export function TransferForm({ onSave, onDel, editItem, onClose, onDragProgress, onToast, currentUser }: TransferFormProps) {
   const [type, setType] = useState<TransferType>(() => editItem?.type ?? "settlement");
-  const [from, setFrom] = useState(() => editItem?.from ?? "약국");
+  const [from, setFrom] = useState(() => editItem?.from ?? currentUser ?? "약국");
   const [to, setTo] = useState(() => editItem?.to ?? "송");
   const [amount, setAmount] = useState(() => editItem ? String(editItem.amount) : "");
   const [date, setDate] = useState(() => editItem?.date ?? new Date().toISOString().slice(0, 10));
@@ -168,7 +170,6 @@ export function TransferForm({ onSave, onDel, editItem, onClose, onDragProgress,
                     value={amount}
                     onChange={(e) => setAmount(e.target.value)}
                     placeholder="0"
-                    autoFocus
                     className={`${inputH} w-full font-bold tabular-nums`}
                   />
                 </div>
@@ -181,7 +182,7 @@ export function TransferForm({ onSave, onDel, editItem, onClose, onDragProgress,
                       className={`${inputH} w-full font-semibold flex items-center justify-center gap-1`}
                     >
                       {currency}
-                      <span className="text-[11px] text-text4" style={{ transform: curOpen ? "rotate(180deg)" : "rotate(0)", transition: "transform 0.15s" }}>▾</span>
+                      <Icon name="chevron-down" size={14} className="text-text4" style={{ transform: curOpen ? "rotate(180deg)" : "rotate(0)", transition: "transform 0.15s" }} />
                     </button>
                     {curOpen && (
                       <>

@@ -201,7 +201,6 @@ export function AddForm({
               value={desc}
               onChange={(e) => setDesc(e.target.value)}
               placeholder="어디서 뭘 했나요?"
-              autoFocus
               className="w-full py-2 px-3 bg-[#f7f8fa] rounded-lg text-[13px] leading-[20px] text-text1 outline-none placeholder:text-text4"
             />
           </div>
@@ -228,9 +227,7 @@ export function AddForm({
                   className="w-full py-[6px] px-2 bg-[#f7f8fa] rounded-lg text-[13px] leading-[20px] font-semibold text-text1 flex items-center justify-center gap-1"
                 >
                   {cur}
-                  <span className="text-[11px] text-text4"
-                    style={{ transform: curOpen ? "rotate(180deg)" : "rotate(0)", transition: "transform 0.15s" }}
-                  >▾</span>
+                  <Icon name="chevron-down" size={14} className="text-text4" style={{ transform: curOpen ? "rotate(180deg)" : "rotate(0)", transition: "transform 0.15s" }} />
                 </button>
                 {curOpen && (
                   <>
@@ -310,7 +307,7 @@ export function AddForm({
                 <button
                   key={c}
                   onClick={() => setCat(c)}
-                  className={`press-btn px-[10px] py-[5px] rounded-full text-[11px] leading-[17px] font-medium transition-colors flex items-center justify-center gap-[3px] ${
+                  className={`press-btn px-[14px] py-[7px] rounded-full text-[13px] leading-[20px] font-medium transition-colors flex items-center justify-center gap-[4px] ${
                     cat === c ? "text-white" : "bg-white text-text3"
                   }`}
                   style={
@@ -319,7 +316,7 @@ export function AddForm({
                       : { boxShadow: "inset 0 0 0 1px #e0e2e7" }
                   }
                 >
-                  <Icon name={CATEGORY_ICONS[c]} variant="fill" size={12} />
+                  <Icon name={CATEGORY_ICONS[c]} variant="fill" size={15} />
                   {c}
                 </button>
               ))}

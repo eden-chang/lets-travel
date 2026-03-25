@@ -274,11 +274,11 @@ export function WalletTab({
                         saveCash({ ...entry, amount: val });
                       }
                     }}
-                    className="flex-1 px-2 py-[6px] border border-border rounded-lg text-[14px] leading-[21px] outline-none text-right"
+                    className="w-[80px] px-2 py-[6px] border border-border rounded-lg text-[14px] leading-[21px] outline-none text-right"
                   />
                   <button
                     onClick={() => deleteCash(entry.id)}
-                    className="text-[12px] leading-[18px] text-danger px-2 py-1 flex items-center justify-center"
+                    className="shrink-0 whitespace-nowrap text-[12px] leading-[18px] text-danger px-2 py-1 flex items-center justify-center"
                   >
                     삭제
                   </button>
