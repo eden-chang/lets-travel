@@ -146,7 +146,7 @@ export function AddForm({
 
   const label = "text-[11px] leading-[17px] font-semibold text-text3 mb-[5px]";
   const selBtn = (active: boolean) =>
-    `press-btn py-[6px] rounded-lg text-[12px] leading-[18px] font-medium transition-colors flex items-center justify-center ${
+    `press-btn py-[8px] rounded-lg text-[12px] leading-[18px] font-medium transition-colors flex items-center justify-center ${
       active ? "bg-text1 text-white" : "bg-[#f2f3f7] text-text3"
     }`;
 
@@ -216,7 +216,7 @@ export function AddForm({
                   value={amt}
                   onChange={(e) => setAmt(e.target.value)}
                   placeholder="0"
-                  className="w-full py-[6px] px-3 bg-[#f7f8fa] rounded-lg text-[15px] leading-[23px] font-bold text-text1 outline-none placeholder:text-text4 tabular-nums"
+                  className="w-full py-[8px] px-3 bg-[#f7f8fa] rounded-lg text-[15px] leading-[23px] font-bold text-text1 outline-none placeholder:text-text4 tabular-nums"
                 />
               </div>
               <div className="w-[80px] relative">
@@ -224,7 +224,7 @@ export function AddForm({
                 <button
                   type="button"
                   onClick={() => setCurOpen((v) => !v)}
-                  className="w-full py-[6px] px-2 bg-[#f7f8fa] rounded-lg text-[13px] leading-[20px] font-semibold text-text1 flex items-center justify-center gap-1"
+                  className="w-full py-[8px] px-2 bg-[#f7f8fa] rounded-lg text-[13px] leading-[20px] font-semibold text-text1 flex items-center justify-center gap-1"
                 >
                   {cur}
                   <Icon name="chevron-down" size={14} className="text-text4" style={{ transform: curOpen ? "rotate(180deg)" : "rotate(0)", transition: "transform 0.15s" }} />
@@ -278,7 +278,7 @@ export function AddForm({
                       <button
                         key={m}
                         onClick={() => setMethod(m)}
-                        className={`flex-1 py-[6px] text-[12px] leading-[18px] font-semibold text-center z-10 transition-colors ${
+                        className={`flex-1 py-[8px] text-[12px] leading-[18px] font-semibold text-center z-10 transition-colors ${
                           method === m ? "text-white" : "text-text3"
                         }`}
                       >
@@ -293,7 +293,7 @@ export function AddForm({
                 <DateInput
                   value={date}
                   onChange={setDate}
-                  className="w-full py-[6px] px-2 bg-[#f2f3f7] rounded-lg text-[12px] leading-[18px] text-text1 text-center outline-none"
+                  className="w-full py-[8px] px-2 bg-[#f2f3f7] rounded-lg text-[12px] leading-[18px] text-text1 text-center outline-none"
                 />
               </div>
             </div>
@@ -302,7 +302,7 @@ export function AddForm({
           {/* 항목 */}
           <div className="mx-4 mb-2 bg-white rounded-2xl px-5 py-4">
             <div className={label}>항목</div>
-            <div className="flex flex-wrap gap-[5px]">
+            <div className="flex flex-wrap gap-[8px]">
               {CATEGORIES.map((c) => (
                 <button
                   key={c}
@@ -420,7 +420,7 @@ export function AddForm({
                             });
                           }}
                           placeholder="0"
-                          className="w-[60px] shrink-0 py-[6px] px-2 bg-[#f7f8fa] rounded-lg text-[13px] leading-[20px] text-text1 outline-none tabular-nums text-right"
+                          className="w-[72px] shrink-0 py-[6px] px-2 bg-[#f7f8fa] rounded-lg text-[13px] leading-[20px] text-text1 outline-none tabular-nums text-right"
                         />
                         <input
                           type="text"

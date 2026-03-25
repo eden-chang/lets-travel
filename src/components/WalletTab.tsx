@@ -153,7 +153,7 @@ export function WalletTab({
           onClick={() => setShowRates((v) => !v)}
           className={`${actionBtn} border border-border ${showRates ? "bg-action text-white border-action" : "bg-white text-text1"}`}
         >
-          환율 보기
+          {showRates ? "환율 닫기" : "환율 보기"}
         </button>
       </div>
 
