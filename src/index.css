@@ -1,0 +1,294 @@
+@import "tailwindcss";
+
+@font-face { font-family: "Pretendard"; font-weight: 100; src: url("/font/Pretendard-Thin.otf") format("opentype"); font-display: swap; }
+@font-face { font-family: "Pretendard"; font-weight: 200; src: url("/font/Pretendard-ExtraLight.otf") format("opentype"); font-display: swap; }
+@font-face { font-family: "Pretendard"; font-weight: 300; src: url("/font/Pretendard-Light.otf") format("opentype"); font-display: swap; }
+@font-face { font-family: "Pretendard"; font-weight: 400; src: url("/font/Pretendard-Regular.otf") format("opentype"); font-display: swap; }
+@font-face { font-family: "Pretendard"; font-weight: 500; src: url("/font/Pretendard-Medium.otf") format("opentype"); font-display: swap; }
+@font-face { font-family: "Pretendard"; font-weight: 600; src: url("/font/Pretendard-SemiBold.otf") format("opentype"); font-display: swap; }
+@font-face { font-family: "Pretendard"; font-weight: 700; src: url("/font/Pretendard-Bold.otf") format("opentype"); font-display: swap; }
+@font-face { font-family: "Pretendard"; font-weight: 800; src: url("/font/Pretendard-ExtraBold.otf") format("opentype"); font-display: swap; }
+@font-face { font-family: "Pretendard"; font-weight: 900; src: url("/font/Pretendard-Black.otf") format("opentype"); font-display: swap; }
+
+@theme {
+  --font-sans: "Pretendard", system-ui, sans-serif;
+  --font-mono: "Pretendard", system-ui, sans-serif;
+
+  /* TDS Typography tokens (size/line-height) */
+  --typo-t1: 30px; --typo-lh-t1: 40px;
+  --typo-t2: 26px; --typo-lh-t2: 35px;
+  --typo-t3: 22px; --typo-lh-t3: 31px;
+  --typo-t4: 20px; --typo-lh-t4: 29px;
+  --typo-t5: 17px; --typo-lh-t5: 25.5px;
+  --typo-t6: 15px; --typo-lh-t6: 22.5px;
+  --typo-t7: 13px; --typo-lh-t7: 19.5px;
+  --typo-s5: 24px; --typo-lh-s5: 33px;
+  --typo-s9: 18px; --typo-lh-s9: 27px;
+  --typo-s10: 16px; --typo-lh-s10: 24px;
+  --typo-s11: 14px; --typo-lh-s11: 21px;
+  --typo-s12: 12px; --typo-lh-s12: 18px;
+  --typo-s13: 11px; --typo-lh-s13: 16.5px;
+
+  /* TDS 메인 색상 */
+  --color-action: #3182f6;       /* blue500 */
+  --color-action-l: #e8f3ff;     /* blue50 */
+  --color-danger: #f04452;       /* red500 */
+  --color-negative: #f04452;     /* red500 */
+  --color-negative-l: #ffeeee;   /* red50 */
+  --color-positive: #03b26c;     /* green500 */
+  --color-positive-l: #f0faf6;   /* green50 */
+  --color-deposit: #a234c7;      /* purple500 */
+  --color-deposit-l: #f9f0fc;    /* purple50 */
+  --color-warn: #fe9800;         /* orange500 */
+
+  /* 탭 색상 */
+  --color-tab-list: #3182f6;     /* blue500 */
+  --color-tab-settle: #03b26c;   /* green500 */
+  --color-tab-transfer: #a234c7; /* purple500 */
+  --color-tab-stats: #fe9800;    /* orange500 */
+
+  /* 카테고리 색상 */
+  --color-cat-food: #f66570;     /* red400 */
+  --color-cat-transport: #3182f6;/* blue500 */
+  --color-cat-stay: #a234c7;     /* purple500 */
+  --color-cat-ticket: #fb8800;   /* orange600 */
+  --color-cat-shop: #03b26c;     /* green500 */
+  --color-cat-etc: #6b7684;      /* grey600 */
+
+  /* TDS 레이아웃 */
+  --color-bg: #f2f4f6;           /* grey100 */
+  --color-card: #ffffff;
+  --color-border: #e5e8eb;       /* grey200 */
+
+  /* TDS 텍스트 */
+  --color-text1: #191f28;        /* grey900 */
+  --color-text2: #4e5968;        /* grey700 */
+  --color-text3: #6b7684;        /* grey600 */
+  --color-text4: #8b95a1;        /* grey500 */
+
+  /* 헤더 */
+  --color-h1: #191f28;           /* grey900 */
+  --color-h2: #333d4b;           /* grey800 */
+}
+
+:root {
+  --th: #3182f6;
+}
+
+/* 기본 스크롤바 숨김 (커스텀 스크롤바 사용) */
+* {
+  scrollbar-width: none;
+}
+
+*::-webkit-scrollbar {
+  display: none;
+}
+
+/* 메인 콘텐츠: iOS식 바운스 + 커스텀 스크롤바 */
+.custom-scroll {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+}
+
+.custom-scroll.scrolling {
+  scrollbar-color: rgba(180, 180, 180, 0.45) transparent;
+}
+
+/* Webkit (Chrome, Safari) */
+.custom-scroll::-webkit-scrollbar {
+  display: block;
+  width: 2px;
+}
+
+.custom-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 2px;
+}
+
+.custom-scroll.scrolling::-webkit-scrollbar-thumb {
+  background: rgba(180, 180, 180, 0.45);
+}
+
+*,
+*::before,
+*::after {
+  -webkit-tap-highlight-color: transparent;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  font-family: "Pretendard", system-ui, -apple-system, sans-serif !important;
+  background: #e5e7eb;
+  color: var(--color-text1);
+  -webkit-font-smoothing: antialiased;
+  height: 100%;
+  overflow: hidden;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+input,
+button {
+  font-family: inherit;
+}
+
+button:focus-visible,
+input:focus-visible {
+  outline: 2px solid var(--color-action);
+  outline-offset: 2px;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideOutRight {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes contentFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes tabFadeIn {
+  from {
+    opacity: 0.6;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes whiteOverlayOut {
+  0% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(6px);
+  }
+  15% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  75% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-4px);
+  }
+}
+
+button,
+a,
+input,
+[role="button"] {
+  transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
+}
+
+/* 지출 추가 폼 내부 버튼: 오버레이 press 효과 */
+.press-btn {
+  position: relative;
+  isolation: isolate;
+}
+
+.press-btn::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: #000;
+  opacity: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  z-index: 1;
+  transition: opacity 0.08s ease;
+}
+
+.press-btn:active::after {
+  opacity: 0.08;
+}
+
+/* FAB: scale + 오버레이 — position은 클래스에서 fixed로 설정되므로 여기서 relative 사용 금지 */
+.press-fab {
+  transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+  overflow: hidden;
+}
+
+.press-fab:active {
+  transform: scale(0.92);
+}
+
+.press-fab::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: #000;
+  opacity: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  transition: opacity 0.08s ease;
+}
+
+.press-fab:active::after {
+  opacity: 0.1;
+}
+
+@media (hover: hover) {
+  .card-hover:hover {
+    box-shadow: none;
+  }
+}
+
