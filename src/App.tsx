@@ -388,6 +388,7 @@ export function App() {
           onClose={() => { setTransferFormOpen(false); setEditTransfer(null); }}
           onDragProgress={handleDragProgress}
           onToast={flash}
+          currentUser={currentUser ?? undefined}
         />
       )}
 

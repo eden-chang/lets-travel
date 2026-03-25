@@ -13,7 +13,7 @@ export const TRIP = {
 } as const;
 
 // ── 지출 카테고리 ──
-export const CATEGORIES = ["식비", "교통", "관광", "입장료", "쇼핑", "항공", "숙박", "기타"] as const;
+export const CATEGORIES = ["식비", "교통", "관광", "쇼핑", "문화", "항공", "숙박", "기타"] as const;
 export const CURRENCIES = ["EUR", "CZK", "HUF", "KRW"] as const;
 
 export const EXCHANGE_RATES: Record<string, number> = {
@@ -58,7 +58,7 @@ export const CATEGORY_COLORS: Record<string, string> = {
   항공: "#18a5a5",   // teal500
   숙박: "#a234c7",   // purple500
   관광: "#ffa927",   // orange400
-  입장료: "#fb8800", // orange600
+  문화: "#fb8800",   // orange600
   쇼핑: "#03b26c",   // green500
   기타: "#6b7684",   // grey600
 };
@@ -69,7 +69,7 @@ export const CATEGORY_ICONS: Record<string, string> = {
   항공: "airplane",
   숙박: "stay",
   관광: "travel",
-  입장료: "ticket",
+  문화: "ticket",
   쇼핑: "shop",
   기타: "etc",
 };
@@ -80,7 +80,7 @@ export const CATEGORY_BG: Record<string, string> = {
   항공: "#edf8f8",   // teal50
   숙박: "#f9f0fc",   // purple50
   관광: "#fff3e0",   // orange50
-  입장료: "#fff3e0", // orange50
+  문화: "#fff3e0",   // orange50
   쇼핑: "#f0faf6",   // green50
   기타: "#f2f4f6",   // grey100
 };

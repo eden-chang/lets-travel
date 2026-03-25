@@ -244,15 +244,12 @@ export function ListTab({ exp, currentUser, rates, ratesUpdatedAt, onDel, onEdit
         <div>
           {sortedDates.map((date) => {
             const d = new Date(date + "T00:00:00");
-            const dayTotal = grouped[date].reduce((s, e) => s + e.krw, 0);
             const dayIdx = d.getDay();
-            const isSat = dayIdx === 6;
-            const isSun = dayIdx === 0;
 
             return (
               <div key={date} className="mx-4 mb-3 bg-white rounded-2xl overflow-hidden">
                 {/* 날짜 헤더 */}
-                <div className="flex justify-between items-center px-4 pt-3 pb-2">
+                <div className="px-4 pt-3 pb-2">
                   <span className="text-[13px] leading-[20px] font-bold text-text1">
                     {date.slice(5).replace("-", "/")}{" "}
                     <span
@@ -263,9 +260,6 @@ export function ListTab({ exp, currentUser, rates, ratesUpdatedAt, onDel, onEdit
                     >
                       {DAY_NAMES[dayIdx]}
                     </span>
-                  </span>
-                  <span className="tabular-nums text-[11px] leading-[17px] font-semibold text-text3">
-                    {formatKRW(dayTotal)}원
                   </span>
                 </div>
 
