@@ -149,9 +149,9 @@ export function WalletTab({
         <span className="text-[24px] leading-[33px] text-text1" style={{ fontWeight: 800 }}>나의 지갑</span>
         <button
           onClick={() => setShowRates((v) => !v)}
-          className={`${actionBtn} ${showRates ? "bg-action text-white" : "bg-white text-text1 border border-border"}`}
+          className={`${actionBtn} border border-border ${showRates ? "bg-action text-white border-action" : "bg-white text-text1"}`}
         >
-          환율
+          환율 보기
         </button>
       </div>
 

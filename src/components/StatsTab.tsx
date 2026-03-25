@@ -83,7 +83,7 @@ export function StatsTab({ settlement, expenses, currentUser }: StatsTabProps) {
         <div className="flex flex-col gap-[6px]">
           {sortedDates.map((date) => {
             const amount = byDate[date];
-            const d = new Date(date);
+            const d = new Date(date + "T00:00:00");
             const pct = Math.max(8, (amount / maxDaily) * 100);
             return (
               <div key={date} className="flex items-center gap-2">
