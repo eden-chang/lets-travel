@@ -8,7 +8,7 @@ import {
   subscribeToChanges,
 } from "../lib/sync";
 import { isSupabaseConfigured } from "../lib/supabase";
-import { seedIfEmpty } from "../lib/seed";
+import { cleanupMockData } from "../lib/seed";
 import type { Expense, Transfer, CashEntry, SyncStatus } from "../types";
 
 interface UseDataReturn {
@@ -45,7 +45,7 @@ export function useData(): UseDataReturn {
   }, []);
 
   useEffect(() => {
-    seedIfEmpty().then(() => reloadFromIDB()).then(() => setReady(true));
+    cleanupMockData().then(() => reloadFromIDB()).then(() => setReady(true));
   }, [reloadFromIDB]);
 
   useEffect(() => {
