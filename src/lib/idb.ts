@@ -126,6 +126,11 @@ export async function softDeleteItem(
   return record;
 }
 
+export async function removeItemRaw(store: DataStore, id: string): Promise<void> {
+  const db = await getDB();
+  await db.delete(store, id);
+}
+
 export async function mergeRemoteItem(
   store: DataStore,
   remoteItem: Expense | Transfer
