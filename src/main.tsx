@@ -8,11 +8,25 @@ import "./index.css";
 registerSW({ immediate: true });
 
 if ("serviceWorker" in navigator) {
-  let reloading = false;
+  let pendingReload = false;
+
+  const reloadIfHidden = (): boolean => {
+    if (document.visibilityState === "hidden") {
+      window.location.reload();
+      return true;
+    }
+    return false;
+  };
+
   navigator.serviceWorker.addEventListener("controllerchange", () => {
-    if (reloading) return;
-    reloading = true;
-    window.location.reload();
+    if (pendingReload) return;
+    pendingReload = true;
+
+    if (reloadIfHidden()) return;
+
+    document.addEventListener("visibilitychange", () => {
+      reloadIfHidden();
+    });
   });
 }
 
