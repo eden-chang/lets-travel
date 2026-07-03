@@ -13,9 +13,9 @@ export interface ExchangeRates {
 }
 
 const FALLBACK_RATES: ExchangeRates = {
-  EUR: 1480,
-  CZK: 62,
-  HUF: 3.8,
+  EUR: 1748.98,
+  CZK: 72.49,
+  HUF: 4.96,
   KRW: 1,
   updatedAt: "",
 };
