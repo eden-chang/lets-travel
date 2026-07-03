@@ -21,6 +21,7 @@ export interface Expense {
   splitMode?: boolean;
   sharedAmount?: number;
   splits?: ExpenseSplit[];
+  order?: number;
   updated_at?: string;
   deleted?: boolean;
 }

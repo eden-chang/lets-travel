@@ -1,5 +1,20 @@
 import { useState, useMemo } from "react";
 import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  TouchSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+  useSortable,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import {
   MEMBERS,
   CATEGORY_COLORS,
   CATEGORY_ICONS,
@@ -18,6 +33,7 @@ interface ListTabProps {
   ratesUpdatedAt: string;
   onDel: (id: string) => void;
   onEdit: (item: Expense) => void;
+  onReorder: (items: Expense[]) => void;
 }
 
 
@@ -52,60 +68,92 @@ function buildDateTabs(): DateTab[] {
 
 const DATE_TABS = buildDateTabs();
 
-// ── Expense Card ──
+// ── Expense Card (Sortable) ──
 interface ExpenseCardProps {
   item: Expense;
   onClick: () => void;
 }
 
 function ExpenseCard({ item, onClick }: ExpenseCardProps) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: item.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
+
   const color = CATEGORY_COLORS[item.category] ?? "#6b7280";
   const bg = CATEGORY_BG[item.category] ?? "#f3f4f6";
   const icon = CATEGORY_ICONS[item.category] ?? "etc";
 
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      className="w-full text-left active:bg-[#f8f8fa] transition-colors"
-    >
-      <div className="py-3 px-4 flex gap-3 items-center">
-        <div
-          className="shrink-0 w-9 h-9 rounded-[10px] flex items-center justify-center"
-          style={{ backgroundColor: bg, color }}
-        >
-          <Icon name={icon} variant="fill" size={18} />
-        </div>
+    <div ref={setNodeRef} style={style} {...attributes}>
+      <button
+        type="button"
+        onClick={onClick}
+        className="w-full text-left active:bg-[#f8f8fa] transition-colors"
+      >
+        <div className="py-3 px-4 flex gap-3 items-center">
+          <div
+            {...listeners}
+            className="shrink-0 w-9 h-9 rounded-[10px] flex items-center justify-center cursor-grab active:cursor-grabbing"
+            style={{ backgroundColor: bg, color }}
+          >
+            <Icon name={icon} variant="fill" size={18} />
+          </div>
 
-        <div className="flex-1 min-w-0">
-          <div className="text-[14px] leading-[21px] font-semibold text-text1 truncate">
-            {item.desc}
-          </div>
-          <div className="text-[11px] leading-[17px] text-text4 mt-[2px]">
-            {item.payer} 결제 · {item.members.length === MEMBERS.length ? "전원" : item.members.join(", ")}
-          </div>
-        </div>
-
-        <div className="text-right shrink-0">
-          <div className="text-[15px] leading-[23px] font-bold text-text1">
-            {formatKRW(item.krw)}원
-          </div>
-          {item.currency !== "KRW" && (
-            <div className="tabular-nums text-[11px] leading-[17px] text-text4">
-              {item.amount.toLocaleString()} {item.currency}
+          <div className="flex-1 min-w-0">
+            <div className="text-[14px] leading-[21px] font-semibold text-text1 truncate">
+              {item.desc}
             </div>
-          )}
+            <div className="text-[11px] leading-[17px] text-text4 mt-[2px]">
+              {item.payer} 결제 · {item.members.length === MEMBERS.length ? "전원" : item.members.join(", ")}
+            </div>
+          </div>
+
+          <div className="text-right shrink-0">
+            <div className="text-[15px] leading-[23px] font-bold text-text1">
+              {formatKRW(item.krw)}원
+            </div>
+            {item.currency !== "KRW" && (
+              <div className="tabular-nums text-[11px] leading-[17px] text-text4">
+                {item.amount.toLocaleString()} {item.currency}
+              </div>
+            )}
+          </div>
         </div>
-      </div>
-    </button>
+      </button>
+    </div>
   );
 }
 
 // ── Main ListTab ──
-export function ListTab({ exp, currentUser, rates, ratesUpdatedAt, onDel, onEdit }: ListTabProps) {
+export function ListTab({ exp, currentUser, rates, ratesUpdatedAt, onDel, onEdit, onReorder }: ListTabProps) {
   const [dateFilter, setDateFilter] = useState("all");
   const [includeBigItems, setIncludeBigItems] = useState(false);
   const [onlyMine, setOnlyMine] = useState(false);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    }),
+    useSensor(TouchSensor, {
+      activationConstraint: {
+        delay: 200,
+        tolerance: 5,
+      },
+    })
+  );
 
   const EXCLUDED_CATS = ["항공", "숙박"];
 
@@ -135,6 +183,22 @@ export function ListTab({ exp, currentUser, rates, ratesUpdatedAt, onDel, onEdit
       if (!map[e.date]) map[e.date] = [];
       map[e.date].push(e);
     });
+    // Sort items within each date by order (if set), then by updated_at
+    Object.keys(map).forEach((date) => {
+      map[date].sort((a, b) => {
+        // If both have order, sort by order
+        if (a.order !== undefined && b.order !== undefined) {
+          return a.order - b.order;
+        }
+        // If only one has order, it comes first
+        if (a.order !== undefined) return -1;
+        if (b.order !== undefined) return 1;
+        // Otherwise sort by updated_at (newest first)
+        const aTime = a.updated_at ? new Date(a.updated_at).getTime() : 0;
+        const bTime = b.updated_at ? new Date(b.updated_at).getTime() : 0;
+        return bTime - aTime;
+      });
+    });
     return map;
   }, [filtered]);
 
@@ -142,6 +206,31 @@ export function ListTab({ exp, currentUser, rates, ratesUpdatedAt, onDel, onEdit
     () => Object.keys(grouped).sort().reverse(),
     [grouped]
   );
+
+  const handleDragEnd = (event: DragEndEvent, date: string) => {
+    const { active, over } = event;
+
+    if (!over || active.id === over.id) return;
+
+    const items = grouped[date];
+    const oldIndex = items.findIndex((item) => item.id === active.id);
+    const newIndex = items.findIndex((item) => item.id === over.id);
+
+    if (oldIndex === -1 || newIndex === -1) return;
+
+    // Reorder the items
+    const newItems = [...items];
+    const [movedItem] = newItems.splice(oldIndex, 1);
+    newItems.splice(newIndex, 0, movedItem);
+
+    // Assign new order values
+    const updatedItems = newItems.map((item, index) => ({
+      ...item,
+      order: index,
+    }));
+
+    onReorder(updatedItems);
+  };
 
   return (
     <div className="flex flex-col">
@@ -247,33 +336,45 @@ export function ListTab({ exp, currentUser, rates, ratesUpdatedAt, onDel, onEdit
             const dayIdx = d.getDay();
 
             return (
-              <div key={date} className="mx-4 mb-3 bg-white rounded-2xl overflow-hidden">
-                {/* 날짜 헤더 */}
-                <div className="px-4 pt-3 pb-2">
-                  <span className="text-[13px] leading-[20px] font-bold text-text1">
-                    {date.slice(5).replace("-", "/")}{" "}
-                    <span
-                      className="font-normal"
-                      style={{
-                        color: "#8b95a1",
-                      }}
-                    >
-                      {DAY_NAMES[dayIdx]}
+              <DndContext
+                key={date}
+                sensors={sensors}
+                collisionDetection={closestCenter}
+                onDragEnd={(e) => handleDragEnd(e, date)}
+              >
+                <div className="mx-4 mb-3 bg-white rounded-2xl overflow-hidden">
+                  {/* 날짜 헤더 */}
+                  <div className="px-4 pt-3 pb-2">
+                    <span className="text-[13px] leading-[20px] font-bold text-text1">
+                      {date.slice(5).replace("-", "/")}{" "}
+                      <span
+                        className="font-normal"
+                        style={{
+                          color: "#8b95a1",
+                        }}
+                      >
+                        {DAY_NAMES[dayIdx]}
+                      </span>
                     </span>
-                  </span>
-                </div>
-
-                {/* 지출 항목들 */}
-                {grouped[date].map((item, idx) => (
-                  <div key={item.id}>
-                    {idx > 0 && <div className="mx-4 border-t border-[#f0f1f3]" />}
-                    <ExpenseCard
-                      item={item}
-                      onClick={() => onEdit(item)}
-                    />
                   </div>
-                ))}
-              </div>
+
+                  {/* 지출 항목들 */}
+                  <SortableContext
+                    items={grouped[date].map((item) => item.id)}
+                    strategy={verticalListSortingStrategy}
+                  >
+                    {grouped[date].map((item, idx) => (
+                      <div key={item.id}>
+                        {idx > 0 && <div className="mx-4 border-t border-[#f0f1f3]" />}
+                        <ExpenseCard
+                          item={item}
+                          onClick={() => onEdit(item)}
+                        />
+                      </div>
+                    ))}
+                  </SortableContext>
+                </div>
+              </DndContext>
             );
           })}
           <div className="h-4" />

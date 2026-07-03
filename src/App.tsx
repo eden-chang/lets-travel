@@ -116,6 +116,13 @@ export function App() {
     [saveExpense]
   );
 
+  const handleReorder = useCallback(
+    (items: Expense[]) => {
+      items.forEach((item) => saveExpense(item));
+    },
+    [saveExpense]
+  );
+
   const handleFab = useCallback(() => {
     if (view === "list") {
       setEditItem(null);
@@ -247,6 +254,7 @@ export function App() {
             onEdit={(it: Expense) => {
               setDetailItem(it);
             }}
+            onReorder={handleReorder}
           />
         )}
         {view === "settle" && <SettleTab settlement={settlement} />}
