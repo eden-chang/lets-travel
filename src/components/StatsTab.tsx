@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { MEMBERS, CATEGORY_COLORS, CATEGORY_ICONS, DAY_NAMES, TRIP } from "../constants";
-import { formatKRW } from "../utils";
+import { formatKRW, getMyShareKRW } from "../utils";
 import { Icon } from "./Icon";
 import type { Expense } from "../types";
 
@@ -19,7 +19,14 @@ export function StatsTab({ settlement, expenses, currentUser }: StatsTabProps) {
   const filtered = useMemo(() => {
     let list = expenses;
     if (!includeBigItems) list = list.filter((e) => !EXCLUDED_CATS.includes(e.category));
-    if (onlyMine && currentUser) list = list.filter((e) => e.members.includes(currentUser));
+    if (onlyMine && currentUser) {
+      list = list
+        .filter((e) => e.members.includes(currentUser))
+        .map((e) => ({
+          ...e,
+          krw: getMyShareKRW(e, currentUser),
+        }));
+    }
     return list;
   }, [expenses, includeBigItems, onlyMine, currentUser]);
 

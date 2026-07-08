@@ -17,6 +17,7 @@ create table if not exists expenses (
   split_mode  boolean not null default false,
   shared_amount numeric,
   splits      jsonb,
+  "order"     integer,
   updated_at  timestamptz not null default now(),
   deleted     boolean not null default false
 );

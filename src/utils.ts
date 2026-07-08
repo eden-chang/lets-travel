@@ -1,4 +1,5 @@
 import { EXCHANGE_RATES } from "./constants";
+import type { Expense } from "./types";
 
 export function uid(): string {
   return Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
@@ -61,4 +62,44 @@ export function formatKRW(n: number): string {
   }
 
   return sign + parts.join(" ");
+}
+
+/**
+ * Calculate the KRW amount that a specific user should pay for an expense
+ * @param expense - The expense item
+ * @param currentUser - The user to calculate the share for
+ * @param rates - Exchange rates (optional, uses constants if not provided)
+ * @returns The user's share in KRW
+ */
+export function getMyShareKRW(
+  expense: Expense,
+  currentUser: string,
+  rates?: Record<string, number>
+): number {
+  // If user is not in the members list, return 0
+  if (!expense.members.includes(currentUser)) return 0;
+
+  // Basic split mode: divide total by number of members
+  if (!expense.splitMode) {
+    return Math.round(expense.krw / expense.members.length);
+  }
+
+  // Advanced split mode
+  let myShare = 0;
+
+  // Add shared amount portion
+  if (expense.sharedAmount != null && expense.sharedAmount > 0) {
+    const sharedKRW = toKRW(expense.sharedAmount, expense.currency, rates);
+    myShare += Math.round(sharedKRW / expense.members.length);
+  }
+
+  // Add individual split amount
+  if (expense.splits && expense.splits.length > 0) {
+    const mySplit = expense.splits.find((s) => s.member === currentUser);
+    if (mySplit && mySplit.amount > 0) {
+      myShare += toKRW(mySplit.amount, expense.currency, rates);
+    }
+  }
+
+  return myShare;
 }

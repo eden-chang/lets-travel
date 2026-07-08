@@ -166,7 +166,12 @@ export function ExpenseDetail({ item, onEdit, onDel, onClose, onToast, onDragPro
                 {item.sharedAmount != null && item.sharedAmount > 0 && (
                   <div className="flex items-center justify-between py-[6px] border-b border-[#f0f1f3]">
                     <span className="text-[12px] leading-[18px] text-text3">공유 금액</span>
-                    <span className="text-[12px] leading-[18px] font-semibold text-text1">{formatKRW(item.sharedAmount)}원</span>
+                    <span className="text-[12px] leading-[18px] font-semibold text-text1">
+                      {item.currency === "KRW"
+                        ? `${formatKRW(item.sharedAmount)}원`
+                        : `${item.sharedAmount.toLocaleString()} ${item.currency}`
+                      }
+                    </span>
                   </div>
                 )}
                 {item.splits.map((s, i) => (
@@ -175,7 +180,12 @@ export function ExpenseDetail({ item, onEdit, onDel, onClose, onToast, onDragPro
                       <span className="text-[12px] leading-[18px] font-semibold text-text2">{s.member}</span>
                       {s.memo && <span className="text-[11px] leading-[17px] text-text4">{s.memo}</span>}
                     </div>
-                    <span className="text-[12px] leading-[18px] font-semibold text-text1">{formatKRW(s.amount)}원</span>
+                    <span className="text-[12px] leading-[18px] font-semibold text-text1">
+                      {item.currency === "KRW"
+                        ? `${formatKRW(s.amount)}원`
+                        : `${s.amount.toLocaleString()} ${item.currency}`
+                      }
+                    </span>
                   </div>
                 ))}
               </div>
