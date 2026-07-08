@@ -12,36 +12,61 @@ export interface ExchangeRates {
   updatedAt: string;
 }
 
+// Fallback 환율 (2026년 7월 기준 예상 환율)
 const FALLBACK_RATES: ExchangeRates = {
-  EUR: 1748.98,
-  CZK: 72.49,
-  HUF: 4.96,
+  EUR: 1500,
+  CZK: 60,
+  HUF: 4.0,
   KRW: 1,
   updatedAt: "",
 };
 
 const CACHE_KEY = "exchange_rates";
-const CACHE_MAX_AGE_MS = 6 * 60 * 60 * 1000; // 6시간
 
 /**
- * frankfurter.app에서 EUR 기준 환율을 가져와 KRW 기준으로 변환
+ * Get today's date string in KST (yyyy-MM-dd)
+ */
+function getTodayKST(): string {
+  const now = new Date();
+  const kst = new Date(now.getTime() + 9 * 60 * 60 * 1000); // UTC+9
+  return kst.toISOString().slice(0, 10);
+}
+
+/**
+ * frankfurter.app에서 특정 날짜의 환율을 가져와 KRW 기준으로 변환
+ * API는 유럽중앙은행(ECB)의 공식 일일 환율 데이터를 제공
  */
 async function fetchFromAPI(): Promise<ExchangeRates | null> {
   try {
-    const res = await fetch(
-      "https://api.frankfurter.app/latest?from=KRW&to=EUR,CZK,HUF"
+    // Get yesterday's date (ECB publishes rates with 1-day delay)
+    const today = getTodayKST();
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+    const dateStr = yesterday.toISOString().slice(0, 10);
+
+    // Try yesterday's rate first (most likely to succeed)
+    let res = await fetch(
+      `https://api.frankfurter.app/${dateStr}?from=KRW&to=EUR,CZK,HUF`
     );
+
+    // If yesterday's rate not available, use latest
+    if (!res.ok) {
+      res = await fetch(
+        "https://api.frankfurter.app/latest?from=KRW&to=EUR,CZK,HUF"
+      );
+    }
+
     if (!res.ok) return null;
 
     const data = await res.json();
-    // API returns: { rates: { EUR: 0.000676, CZK: 0.01613, HUF: 0.263 } }
+    // API returns: { date: "2026-07-07", rates: { EUR: 0.000676, CZK: 0.01613, HUF: 0.263 } }
     // We need "1 EUR = X KRW" format, so invert
     const rates: ExchangeRates = {
       EUR: Math.round(1 / data.rates.EUR),
       CZK: Math.round((1 / data.rates.CZK) * 10) / 10,
       HUF: Math.round((1 / data.rates.HUF) * 100) / 100,
       KRW: 1,
-      updatedAt: new Date().toISOString(),
+      updatedAt: today, // Store as today's KST date
     };
     return rates;
   } catch {
@@ -70,12 +95,13 @@ async function saveCachedRates(rates: ExchangeRates): Promise<void> {
 }
 
 /**
- * 캐시가 유효한지 확인
+ * 캐시가 유효한지 확인 (오늘 날짜와 비교)
  */
 function isCacheValid(rates: ExchangeRates): boolean {
   if (!rates.updatedAt) return false;
-  const age = Date.now() - new Date(rates.updatedAt).getTime();
-  return age < CACHE_MAX_AGE_MS;
+  const today = getTodayKST();
+  const cachedDate = rates.updatedAt.slice(0, 10); // Extract date part
+  return cachedDate === today;
 }
 
 /**

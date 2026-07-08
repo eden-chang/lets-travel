@@ -33,23 +33,57 @@ export function AddForm({
   rates,
   ratesUpdatedAt,
 }: AddFormProps) {
+  // Load draft from localStorage (only for new expenses, not edits)
+  const loadDraft = () => {
+    if (editItem) return null;
+    const saved = localStorage.getItem("expense-draft");
+    if (!saved) return null;
+    try {
+      return JSON.parse(saved);
+    } catch {
+      return null;
+    }
+  };
+
+  const draft = loadDraft();
+
   // editItem에서 초기값 한 번에 세팅 (알약 전환 안 보이게)
-  const [date, setDate] = useState(() => editItem?.date ?? new Date().toISOString().slice(0, 10));
-  const [city, setCity] = useState(() => editItem?.city ?? TRIP.defaultCity);
-  const [cat, setCat] = useState(() => editItem?.category ?? "식비");
-  const [desc, setDesc] = useState(() => editItem?.desc ?? "");
-  const [cur, setCur] = useState(() => editItem?.currency ?? "HUF");
-  const [amt, setAmt] = useState(() => editItem ? String(editItem.amount) : "");
-  const [payer, setPayer] = useState(() => editItem?.payer ?? "송");
+  const [date, setDate] = useState(() => editItem?.date ?? draft?.date ?? new Date().toISOString().slice(0, 10));
+  const [city, setCity] = useState(() => editItem?.city ?? draft?.city ?? TRIP.defaultCity);
+  const [cat, setCat] = useState(() => editItem?.category ?? draft?.cat ?? "식비");
+  const [desc, setDesc] = useState(() => editItem?.desc ?? draft?.desc ?? "");
+  const [cur, setCur] = useState(() => editItem?.currency ?? draft?.cur ?? "HUF");
+  const [amt, setAmt] = useState(() => editItem ? String(editItem.amount) : (draft?.amt ?? ""));
+  const [payer, setPayer] = useState(() => editItem?.payer ?? draft?.payer ?? "송");
   const [curOpen, setCurOpen] = useState(false);
-  const [mems, setMems] = useState<string[]>(() => editItem ? [...editItem.members] : [...MEMBERS]);
-  const [method, setMethod] = useState<"card" | "cash">(() => editItem?.method ?? "card");
-  const [splitMode, setSplitMode] = useState(() => editItem?.splitMode ?? false);
-  const [sharedAmount, setSharedAmount] = useState(() => editItem?.sharedAmount != null ? String(editItem.sharedAmount) : "");
+  const [mems, setMems] = useState<string[]>(() => editItem ? [...editItem.members] : (draft?.mems ?? [...MEMBERS]));
+  const [method, setMethod] = useState<"card" | "cash">(() => editItem?.method ?? draft?.method ?? "card");
+  const [splitMode, setSplitMode] = useState(() => editItem?.splitMode ?? draft?.splitMode ?? false);
+  const [sharedAmount, setSharedAmount] = useState(() => editItem?.sharedAmount != null ? String(editItem.sharedAmount) : (draft?.sharedAmount ?? ""));
   const [splits, setSplits] = useState<ExpenseSplit[]>(() =>
-    editItem?.splits ?? MEMBERS.map((m) => ({ member: m, amount: 0, memo: "" }))
+    editItem?.splits ?? draft?.splits ?? MEMBERS.map((m) => ({ member: m, amount: 0, memo: "" }))
   );
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+
+  // Save draft to localStorage whenever form data changes (only for new expenses)
+  useEffect(() => {
+    if (editItem) return; // Don't save draft when editing
+    const draftData = {
+      date,
+      city,
+      cat,
+      desc,
+      cur,
+      amt,
+      payer,
+      mems,
+      method,
+      splitMode,
+      sharedAmount,
+      splits,
+    };
+    localStorage.setItem("expense-draft", JSON.stringify(draftData));
+  }, [editItem, date, city, cat, desc, cur, amt, payer, mems, method, splitMode, sharedAmount, splits]);
 
   // 스와이프 뒤로가기
   const panelRef = useRef<HTMLDivElement>(null);
@@ -140,6 +174,10 @@ export function AddForm({
       sharedAmount: splitMode ? (parseFloat(sharedAmount) || 0) : undefined,
       splits: splitMode ? splits.filter((s) => s.amount > 0) : undefined,
     });
+    // Clear draft after successful submit
+    if (!editItem) {
+      localStorage.removeItem("expense-draft");
+    }
     onToast(editItem ? "수정했어요" : "기록했어요");
     onClose();
   };

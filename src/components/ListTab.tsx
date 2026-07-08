@@ -22,7 +22,7 @@ import {
   DAY_NAMES,
   TRIP,
 } from "../constants";
-import { formatKRW } from "../utils";
+import { formatKRW, getMyShareKRW } from "../utils";
 import { Icon } from "./Icon";
 import type { Expense } from "../types";
 
@@ -99,12 +99,12 @@ function ExpenseCard({ item, onClick }: ExpenseCardProps) {
       <button
         type="button"
         onClick={onClick}
-        className="w-full text-left active:bg-[#f8f8fa] transition-colors"
+        className="w-full text-left active:bg-[#f8f8fa] transition-colors select-none"
       >
         <div className="py-3 px-4 flex gap-3 items-center">
           <div
             {...listeners}
-            className="shrink-0 w-9 h-9 rounded-[10px] flex items-center justify-center cursor-grab active:cursor-grabbing"
+            className="shrink-0 w-9 h-9 rounded-[10px] flex items-center justify-center cursor-grab active:cursor-grabbing touch-none"
             style={{ backgroundColor: bg, color }}
           >
             <Icon name={icon} variant="fill" size={18} />
@@ -160,9 +160,16 @@ export function ListTab({ exp, currentUser, rates, ratesUpdatedAt, onDel, onEdit
   const baseExp = useMemo(() => {
     let list = exp;
     if (!includeBigItems) list = list.filter((e) => !EXCLUDED_CATS.includes(e.category));
-    if (onlyMine) list = list.filter((e) => e.members.includes(currentUser));
+    if (onlyMine) {
+      list = list
+        .filter((e) => e.members.includes(currentUser))
+        .map((e) => ({
+          ...e,
+          krw: getMyShareKRW(e, currentUser, rates),
+        }));
+    }
     return list;
-  }, [exp, currentUser, onlyMine, includeBigItems]);
+  }, [exp, currentUser, onlyMine, includeBigItems, rates]);
 
   const totalCount = baseExp.length;
   const totalKRW = useMemo(() => baseExp.reduce((s, e) => s + e.krw, 0), [baseExp]);
