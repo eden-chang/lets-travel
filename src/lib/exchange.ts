@@ -12,11 +12,11 @@ export interface ExchangeRates {
   updatedAt: string;
 }
 
-// Fallback 환율 (2026년 7월 기준 예상 환율)
+// Fallback 환율 (2026년 7월 기준)
 const FALLBACK_RATES: ExchangeRates = {
-  EUR: 1500,
-  CZK: 60,
-  HUF: 4.0,
+  EUR: 1740,
+  CZK: 73,
+  HUF: 4.85,
   KRW: 1,
   updatedAt: "",
 };
