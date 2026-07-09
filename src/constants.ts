@@ -16,11 +16,11 @@ export const TRIP = {
 export const CATEGORIES = ["식비", "교통", "관광", "쇼핑", "문화", "항공", "숙박", "기타"] as const;
 export const CURRENCIES = ["EUR", "CZK", "HUF", "KRW"] as const;
 
-// Fallback 환율 (API 실패 시 사용, 2026년 7월 기준 예상 환율)
+// Fallback 환율 (API 실패 시 사용, 2026년 7월 기준)
 export const EXCHANGE_RATES: Record<string, number> = {
-  EUR: 1500,
-  CZK: 60,
-  HUF: 4.0,
+  EUR: 1740,
+  CZK: 73,
+  HUF: 4.85,
   KRW: 1,
 };
 
