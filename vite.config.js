@@ -11,8 +11,8 @@ export default defineConfig({
       registerType: "autoUpdate",
       includeAssets: ["favicon.svg", "icons/*.png"],
       manifest: {
-        name: "여행 가자!",
-        short_name: "여행 가자!",
+        name: "Travlog",
+        short_name: "Travlog",
         description: "동유럽 여행 공용 가계부",
         theme_color: "#191f28",
         background_color: "#f2f4f6",

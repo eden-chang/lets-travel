@@ -1,4 +1,4 @@
-# Let's Travel (여행 가자!)
+# Travlog
 
 > An offline-first PWA that four friends used as a shared expense book on a trip to Prague and Budapest. It logs expenses in multiple currencies, syncs them in real time, and works out who owes whom with the fewest transfers.
 
