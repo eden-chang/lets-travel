@@ -58,7 +58,7 @@ export function AddForm({
   const [curOpen, setCurOpen] = useState(false);
   const [mems, setMems] = useState<string[]>(() => editItem ? [...editItem.members] : (draft?.mems ?? [...MEMBERS]));
   const [method, setMethod] = useState<"card" | "cash">(() => editItem?.method ?? draft?.method ?? "card");
-  const [splitMode, setSplitMode] = useState(() => editItem?.splitMode ?? draft?.splitMode ?? false);
+  const [splitMode, setSplitMode] = useState<boolean>(() => editItem?.splitMode ?? draft?.splitMode ?? false);
   const [sharedAmount, setSharedAmount] = useState(() => editItem?.sharedAmount != null ? String(editItem.sharedAmount) : (draft?.sharedAmount ?? ""));
   const [splits, setSplits] = useState<ExpenseSplit[]>(() =>
     editItem?.splits ?? draft?.splits ?? MEMBERS.map((m) => ({ member: m, amount: 0, memo: "" }))
