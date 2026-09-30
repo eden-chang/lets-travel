@@ -51,13 +51,15 @@ async function deleteLocal(): Promise<void> {
   ]);
 }
 
-export async function cleanupMockData(): Promise<void> {
+export async function cleanupLocalMockData(): Promise<void> {
   if (await getMeta(CLEANUP_FLAG)) return;
-
-  const remoteOk = await deleteRemote();
   await deleteLocal();
+}
 
-  if (remoteOk) {
+// 원격 삭제는 멤버 인증 이후에만 가능하므로 초기 동기화 시점에 호출
+export async function cleanupRemoteMockData(): Promise<void> {
+  if (await getMeta(CLEANUP_FLAG)) return;
+  if (await deleteRemote()) {
     await setMeta(CLEANUP_FLAG, new Date().toISOString());
   }
 }

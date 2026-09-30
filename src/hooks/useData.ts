@@ -7,8 +7,8 @@ import {
   pushAllToRemote,
   subscribeToChanges,
 } from "../lib/sync";
-import { isSupabaseConfigured } from "../lib/supabase";
-import { cleanupMockData } from "../lib/seed";
+import { cleanupLocalMockData, cleanupRemoteMockData } from "../lib/seed";
+import { refreshSession } from "../lib/access";
 import type { Expense, Transfer, CashEntry, SyncStatus } from "../types";
 
 interface UseDataReturn {
@@ -25,7 +25,7 @@ interface UseDataReturn {
   deleteCash: (id: string) => Promise<void>;
 }
 
-export function useData(): UseDataReturn {
+export function useData(syncEnabled: boolean): UseDataReturn {
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [transfers, setTransfers] = useState<Transfer[]>([]);
   const [cashEntries, setCashEntries] = useState<CashEntry[]>([]);
@@ -45,11 +45,11 @@ export function useData(): UseDataReturn {
   }, []);
 
   useEffect(() => {
-    cleanupMockData().then(() => reloadFromIDB()).then(() => setReady(true));
+    cleanupLocalMockData().then(() => reloadFromIDB()).then(() => setReady(true));
   }, [reloadFromIDB]);
 
   useEffect(() => {
-    if (!ready || initialSyncDone.current || !isSupabaseConfigured()) return;
+    if (!ready || initialSyncDone.current || !syncEnabled) return;
     initialSyncDone.current = true;
 
     (async () => {
@@ -60,6 +60,7 @@ export function useData(): UseDataReturn {
 
       setSyncStatus("syncing");
       try {
+        await cleanupRemoteMockData();
         await flushSyncQueue();
         await pushAllToRemote();
         const changed = await pullFromRemote();
@@ -70,10 +71,10 @@ export function useData(): UseDataReturn {
         setSyncStatus("error");
       }
     })();
-  }, [ready, reloadFromIDB]);
+  }, [ready, syncEnabled, reloadFromIDB]);
 
   useEffect(() => {
-    if (!ready || !isSupabaseConfigured()) return;
+    if (!ready || !syncEnabled) return;
 
     const unsubscribe = subscribeToChanges(async (table, remoteItem) => {
       const merged = await mergeRemoteItem(table, remoteItem);
@@ -81,12 +82,17 @@ export function useData(): UseDataReturn {
     });
 
     return unsubscribe;
-  }, [ready, reloadFromIDB]);
+  }, [ready, syncEnabled, reloadFromIDB]);
 
   useEffect(() => {
     const handleOnline = async () => {
+      if (!syncEnabled) return;
       setSyncStatus("syncing");
       try {
+        if (!(await refreshSession())) {
+          setSyncStatus("error");
+          return;
+        }
         await flushSyncQueue();
         const changed = await pullFromRemote();
         if (changed) await reloadFromIDB();
@@ -107,7 +113,7 @@ export function useData(): UseDataReturn {
       window.removeEventListener("online", handleOnline);
       window.removeEventListener("offline", handleOffline);
     };
-  }, [reloadFromIDB]);
+  }, [syncEnabled, reloadFromIDB]);
 
   const saveExpense = useCallback(
     async (item: Expense): Promise<void> => {

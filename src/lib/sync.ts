@@ -13,6 +13,11 @@ import type { SyncStore } from "./idb";
 type DataStore = SyncStore;
 type OnRemoteChange = (table: DataStore, item: Expense | Transfer) => void;
 
+// DELETE 이벤트는 payload.new가 비어 있으므로 무시 (앱은 soft delete를 사용)
+function hasRecordId(record: unknown): record is Record<string, unknown> {
+  return typeof record === "object" && record !== null && typeof (record as { id?: unknown }).id === "string";
+}
+
 interface TransferRemoteRecord extends Omit<Transfer, "from" | "to"> {
   from_member: string;
   to_member: string;
@@ -168,7 +173,8 @@ export function subscribeToChanges(onRemoteChange: OnRemoteChange): () => void {
       "postgres_changes",
       { event: "*", schema: "public", table: "expenses" },
       (payload) => {
-        const local = toLocalRecord("expenses", payload.new as Record<string, unknown>);
+        if (!hasRecordId(payload.new)) return;
+        const local = toLocalRecord("expenses", payload.new);
         onRemoteChange("expenses", local);
       }
     )
@@ -176,7 +182,8 @@ export function subscribeToChanges(onRemoteChange: OnRemoteChange): () => void {
       "postgres_changes",
       { event: "*", schema: "public", table: "transfers" },
       (payload) => {
-        const local = toLocalRecord("transfers", payload.new as Record<string, unknown>);
+        if (!hasRecordId(payload.new)) return;
+        const local = toLocalRecord("transfers", payload.new);
         onRemoteChange("transfers", local);
       }
     )

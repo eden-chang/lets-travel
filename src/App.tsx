@@ -1,6 +1,7 @@
 import { useState, useCallback, useMemo, useEffect, useRef } from "react";
 import { computeSettlement } from "./logic";
 import { useData } from "./hooks/useData";
+import { useTripAccess } from "./hooks/useTripAccess";
 import { useExchangeRates } from "./hooks/useExchangeRates";
 import { AddForm } from "./components/AddForm";
 import { ExpenseDetail } from "./components/ExpenseDetail";
@@ -11,6 +12,7 @@ import { TransferTab } from "./components/TransferTab";
 import { StatsTab } from "./components/StatsTab";
 import { WalletTab } from "./components/WalletTab";
 import { Icon } from "./components/Icon";
+import { InviteGate } from "./components/InviteGate";
 import type { Expense, Transfer, Settlement, ViewKey } from "./types";
 import { TAB_COLORS, MEMBERS, TRIP } from "./constants";
 
@@ -42,6 +44,7 @@ if (typeof window !== "undefined") {
 }
 
 export function App() {
+  const { access, join, retry } = useTripAccess();
   const {
     expenses,
     transfers,
@@ -53,7 +56,7 @@ export function App() {
     deleteTransfer,
     saveCash,
     deleteCash,
-  } = useData();
+  } = useData(access === "member");
 
   const { rates, updatedAt: ratesUpdatedAt } = useExchangeRates();
 
@@ -153,12 +156,16 @@ export function App() {
     }, 800);
   }, []);
 
-  if (!ready) {
+  if (!ready || access === "checking") {
     return (
       <div className="min-h-screen flex items-center justify-center text-text4">
         불러오는 중...
       </div>
     );
+  }
+
+  if (access === "needs-invite" || access === "offline" || access === "error") {
+    return <InviteGate access={access} onJoin={join} onRetry={retry} />;
   }
 
   if (!currentUser) {

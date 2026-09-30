@@ -57,11 +57,7 @@ alter publication supabase_realtime add table expenses;
 alter publication supabase_realtime add table transfers;
 alter publication supabase_realtime add table cash;
 
--- RLS - anon key 전체 접근 허용
+-- RLS - 정책이 없으면 모든 접근이 차단됨. 접근 정책은 security.sql에서 설정
 alter table expenses enable row level security;
 alter table transfers enable row level security;
 alter table cash enable row level security;
-
-create policy "Allow all for expenses" on expenses for all using (true) with check (true);
-create policy "Allow all for transfers" on transfers for all using (true) with check (true);
-create policy "Allow all for cash" on cash for all using (true) with check (true);
